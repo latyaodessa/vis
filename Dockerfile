@@ -1,24 +1,13 @@
-FROM node:alpine
+# pull official base image
+FROM node:13.12.0-alpine
+
+
 WORKDIR /app
-COPY . ./
-RUN npm install
-RUN npm run build
 
-FROM nginx:alpine
+COPY package.json /app
 
-RUN pwd
-RUN ls
+RUN yarn install
 
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY . /app
 
-## Remove default nginx index page
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy from the stahg 1
-RUN pwd
-RUN ls
-COPY ./build /usr/share/nginx/html
-
-EXPOSE 3000 80
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["yarn", "run", "start"]
